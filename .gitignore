@@ -108,3 +108,5 @@ venv.bak/
 *.iml
 out
 gen
+model/
+data/
