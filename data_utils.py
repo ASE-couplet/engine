@@ -15,6 +15,13 @@ from vocab import ch2int, VOCAB_SIZE, sentence_to_ints
 from word2vec import get_word_embedding
 from functools import reduce
 
+import jieba.posseg as pg
+noun = ['i', 'j', 'l', 'Ng', 'n', 'nr', 'ns', 'nt', 'nz', 's', 't', 'vn', 'tg']
+special_words = ['月', '花', '天', '日', '树', '竹', '道', '舞', '松', '鸟', '林', '荷', '果',
+                 '锁', '两岸', '壶', '建', '筑', '旭日', '莺', '坛', '猴', '鼎', '生意', '馆',
+                 '鸥', '盘', '米', '上网', '丰收', '丝', '丽日', '蕊', '篱', '胸', '炉', '弓',
+                 '雀', '结婚', '发财', '桑梓', '露水', '蟹', '老少']
+
 train_path = os.path.join(DATA_PROCESSED_DIR, 'train.txt')
 cangtou_train_path = os.path.join(DATA_PROCESSED_DIR, 'cangtou_train.txt')
 kw_train_path = os.path.join(DATA_PROCESSED_DIR, 'kw_train.txt')
@@ -50,7 +57,10 @@ def _gen_train_data():
             kw_row = []
             for sentence in sentences:
                 rows.append([sentence])
-                segs = [seg for seg in segmenter.segment(sentence) if seg in ranks]
+                words = pg.cut(sentence)
+                words = [word.word for word in words if (word.flag in noun or word.word in special_words)]
+                segs = [word for word in words if word in ranks]
+
                 if 0 == len(segs):
                     flag = False
                     break
