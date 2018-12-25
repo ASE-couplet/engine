@@ -11,7 +11,7 @@ def img2tag(image_url):
     The most relevant caption for the image is obtained from the 'description' property.
     """
 
-    subscription_key = "fb768b0691454bf382130b57964f3163"
+    subscription_key = "d6b5c62ea5d140eda8ad3dd2b52be86e"
     assert subscription_key
 
     # You must use the same region in your REST call as you used to get your
@@ -36,9 +36,17 @@ def img2tag(image_url):
     # The 'analysis' object contains various fields that describe the image. The most
     # relevant caption for the image is obtained from the 'description' property.
     analysis = response.json()
-    return response.json()['description']['tags'][:4]
+
+    tags_str = ""
+    for tag in response.json()['description']['tags'][:4]:
+        if tags_str == "":
+            tags_str = tag
+        else:
+            tags_str += "，" + tag
+
+    return tags_str
 
 if __name__ == "__main__":
-    image_url = "https://upload.wikimedia.org/wikipedia/commons/thumb/1/12/" + \
-                 "Broadway_and_Times_Square_by_night.jpg/450px-Broadway_and_Times_Square_by_night.jpg"
+    image_url =  "https://upload.wikimedia.org/wikipedia/commons/thumb/1/12/" + \
+     "Broadway_and_Times_Square_by_night.jpg/450px-Broadway_and_Times_Square_by_night.jpg"
     print(img2tag(image_url))
