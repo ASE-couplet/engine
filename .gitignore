@@ -108,3 +108,14 @@ venv.bak/
 *.iml
 out
 gen
+
+# Users
+predict_couplet/kernel/model/*
+predict_couplet/kernel/data/processed/*
+predict_couplet/model
+predict_poetry/kernel/model/*
+predict_poetry/kernel/data/processed/*
+predict_poetry/model
+predict_couplet/*.db
+predict_poetry/*.db
+predict_poetry/*.jpg
