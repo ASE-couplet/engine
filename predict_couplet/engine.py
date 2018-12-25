@@ -8,6 +8,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.ext.automap import automap_base
 from sqlalchemy.orm import sessionmaker
 
+from api import img2tag
 from plan import Planner
 from predict import Seq2SeqPredictor
 from match import MatchUtil
@@ -58,6 +59,8 @@ if __name__ == "__main__":
     while(1):
         target_orders = sess.query(Order).filter_by(poems=None)
         for item in target_orders:
+            if mode != "dev":
+                item.tags = img2tag(item.image)
             item.poems = maker.predict(item.tags)
             sess.commit()
             logging.warning("Making poems for id:{} poems:{}".format(item.id, item.poems))
