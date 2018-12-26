@@ -56,10 +56,10 @@ if __name__ == "__main__":
     Session = sessionmaker(bind=engine)
     sess = Session()
     while(1):
-        target_orders = sess.query(Order).filter_by(poems=None)
+        target_orders = sess.query(Order).filter_by(poem=None)
         for item in target_orders:
             if mode != "dev":
                 item.tags = img2tag(item.image)
-            item.poems = maker.predict(item.tags)
+            item.poem = maker.predict(item.tags)
             sess.commit()
             logging.warning("Making poems for id:{} poems:{}".format(item.id, item.poems))
