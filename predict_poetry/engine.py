@@ -49,10 +49,10 @@ if __name__ == "__main__":
         engine = create_engine("postgresql+psycopg2://poemscape@poemscape")
     maker = Main_Poetry_maker()
     metadata = MetaData()
-    metadata.reflect(engine, only=['Order'])
+    metadata.reflect(engine, only=['api_order'])
     Base = automap_base(metadata=metadata)
     Base.prepare()
-    Order = Base.classes.Order
+    Order = Base.classes.api_order
     Session = sessionmaker(bind=engine)
     sess = Session()
     while(1):
