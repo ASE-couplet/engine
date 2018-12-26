@@ -37,7 +37,6 @@ scipy==1.1.0
 six==1.11.0
 smart-open==1.7.1
 SQLAlchemy==1.2.15
-tensorflow-gpu==1.2.1
 traitlets==4.3.2
 urllib3==1.24.1
 wcwidth==0.1.7
