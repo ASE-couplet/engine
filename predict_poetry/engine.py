@@ -62,4 +62,4 @@ if __name__ == "__main__":
                 item.tags = img2tag('http://poemscape.mirrors.asia/media/' + item.image)
             item.poem = maker.predict(item.tags)
             sess.commit()
-            logging.warning("Making poems for id:{} poems:{}".format(item.id, item.poems))
+            logging.warning("Making poems for id:{} poems:{}".format(item.id, item.poem))
