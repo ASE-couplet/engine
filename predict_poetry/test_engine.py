@@ -25,7 +25,7 @@ if __name__ == "__main__":
     if mode == "dev":
         engine = create_engine('sqlite:///test_couplet.db?check_same_thread=False', echo=False)
     else:
-        engine = create_engine("postgresql+psycopg2://poemscape:@poemscape.db", echo=True)
+        engine = create_engine("postgresql+psycopg2://poemscape@poemscape")
     # # # Creating the table : ---------------
     # from sqlalchemy import Column,Integer,String
 
@@ -44,10 +44,10 @@ if __name__ == "__main__":
     # ipdb.set_trace() 
 
     metadata = MetaData()
-    metadata.reflect(engine, only=['Order'])
+    metadata.reflect(engine, only=['api_order'])
     Base = automap_base(metadata=metadata)
     Base.prepare()
-    Order = Base.classes.Order
+    Order = Base.classes.api_order
     Session = sessionmaker(bind=engine)
     sess = Session()
     for i in range(100):
@@ -56,4 +56,4 @@ if __name__ == "__main__":
         sess.commit()
         time.sleep(5)
         item = sess.query(Order).filter_by(id=randn).first()
-        print(item.poems)
+        print(item.poem)

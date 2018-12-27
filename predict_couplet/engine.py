@@ -44,23 +44,23 @@ class Main_Poetry_maker:
 if __name__ == "__main__":
     mode = parse_arguments(sys.argv[1:]).Mode
     if mode == "dev":
-        engine = create_engine('sqlite:///test_couplet.db?check_same_thread=False', echo=False)
+        engine = create_engine('sqlite:///test_couplet.db?check_same_thread=False')
     else:
-        engine = create_engine("postgresql+psycopg2://poemscape:@poemscape.db", echo=True)
+        engine = create_engine("postgresql+psycopg2://poemscape@poemscape")
     maker = Main_Poetry_maker()
     ipdb.set_trace()
     metadata = MetaData()
-    metadata.reflect(engine, only=['Order'])
+    metadata.reflect(engine, only=['api_order'])
     Base = automap_base(metadata=metadata)
     Base.prepare()
-    Order = Base.classes.Order
+    Order = Base.classes.api_order
     Session = sessionmaker(bind=engine)
     sess = Session()
     while(1):
-        target_orders = sess.query(Order).filter_by(poems=None)
+        target_orders = sess.query(Order).filter_by(poem=None)
         for item in target_orders:
             if mode != "dev":
-                item.tags = img2tag(item.image)
-            item.poems = maker.predict(item.tags)
+                item.tags = img2tag('http://poemscape.mirrors.asia/media/' + item.image) 
+            item.poem = maker.predict(item.tags)
             sess.commit()
-            logging.warning("Making poems for id:{} poems:{}".format(item.id, item.poems))
+            logging.warning("Making poems for id:{} poems:{}".format(item.id, item.poem))
