@@ -38,6 +38,8 @@ class Main_Poetry_maker:
         while(result == False):
             lines = self.predictor.predict(keywords)
             result = self.Judge.eval_rhyme(lines)
+            no_dieci = self.Judge.dieci(lines)
+            result = result and no_dieci
         logging.debug( lines[0]+'('+keywords[0]+')  '+lines[1]+'('+keywords[1]+')')
         return lines[0]+'   '+lines[1]
 

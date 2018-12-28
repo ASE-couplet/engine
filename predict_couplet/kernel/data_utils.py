@@ -12,8 +12,14 @@ from .rank_words import get_word_ranks
 from .segment import Segmenter
 from .utils import DATA_PROCESSED_DIR, embed_w2v, apply_one_hot, apply_sparse, pad_to, SEP_TOKEN, PAD_TOKEN
 from .vocab import ch2int, VOCAB_SIZE, sentence_to_ints
-from .word2vec import get_word_embedding
 from functools import reduce
+
+import jieba.posseg as pg
+noun = ['i', 'j', 'l', 'Ng', 'n', 'nr', 'ns', 'nt', 'nz', 's', 't', 'vn', 'tg']
+special_words = ['月', '花', '天', '日', '树', '竹', '道', '舞', '松', '鸟', '林', '荷', '果',
+                 '锁', '两岸', '壶', '建', '筑', '旭日', '莺', '坛', '猴', '鼎', '生意', '馆',
+                 '鸥', '盘', '米', '上网', '丰收', '丝', '丽日', '蕊', '篱', '胸', '炉', '弓',
+                 '雀', '结婚', '发财', '桑梓', '露水', '蟹', '老少']
 
 train_path = os.path.join(DATA_PROCESSED_DIR, 'train.txt')
 cangtou_train_path = os.path.join(DATA_PROCESSED_DIR, 'cangtou_train.txt')
@@ -50,7 +56,10 @@ def _gen_train_data():
             kw_row = []
             for sentence in sentences:
                 rows.append([sentence])
-                segs = [seg for seg in segmenter.segment(sentence) if seg in ranks]
+                words = pg.cut(sentence)
+                words = [word.word for word in words if (word.flag in noun or word.word in special_words)]
+                segs = [word for word in words if word in ranks]
+
                 if 0 == len(segs):
                     flag = False
                     break
@@ -182,7 +191,10 @@ def prepare_batch_predict_data(keyword, previous=[], prev=True, rev=False, align
     # keywords
     keywords_ints = process_sentence(keyword, rev=rev, pad_len=4 if align else None)
 
-    source_ints = keywords_ints + (previous_sentences_ints if prev else [])
+    if len(previous) == 0:
+        source_ints = keywords_ints + (previous_sentences_ints if prev else [])
+    else:
+        source_ints = previous_sentences_ints
     source_len = len(source_ints)
 
     source = fill_np_matrix([source_ints], 1, PAD_TOKEN)
@@ -234,7 +246,10 @@ def gen_batch_train_data(batch_size, prev=True, rev=False, align=False, cangtou=
 
                     current_sentence_ints = process_sentence(current_sentence, rev=rev, pad_len=10 if align else None)
                     keywords_ints = process_sentence(keywords, rev=rev, pad_len=4 if align else None)
-                    source_ints = keywords_ints + (previous_sentences_ints if prev else [])
+                    if len(previous_sentences_ints) == 0:
+                        source_ints = keywords_ints + (previous_sentences_ints if prev else [])
+                    else:
+                        source_ints = previous_sentences_ints
 
                     target.append(current_sentence_ints)
                     target_lens.append(len(current_sentence_ints))

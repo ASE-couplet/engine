@@ -2,7 +2,7 @@
 #-*- coding:utf-8 -*-
 
 import os
-
+import json
 import jieba
 from gensim import models
 from random import shuffle, random, randint
@@ -15,12 +15,15 @@ from kernel.rank_words import get_word_ranks
 from functools import reduce
 
 _model_path = os.path.join(DATA_PROCESSED_DIR, 'kw_model.bin')
+_kw_path = os.path.join(DATA_PROCESSED_DIR, 'rank_key_words.json')
 
 
 class Planner:
 
     def __init__(self):
         self.ranks = get_word_ranks()
+        keywords_all = json.load(open(_kw_path, 'r', encoding='utf-8'))
+        self.keywords = [keyword[0] for keyword in keywords_all]
         if not os.path.exists(_model_path):
             self._train()
         else:
@@ -65,16 +68,44 @@ class Planner:
     def plan(self, text):
         def extract(sentence):
             return [x for x in jieba.lcut(sentence) if x in self.ranks]
-        keywords = sorted(reduce(lambda x,y:x+y, list(map(extract, split_sentences(text))), []),
-            key = lambda x : self.ranks[x])
-        words = [keywords[idx] for idx in \
-                [i for i in range(len(keywords)) if 0 == i or keywords[i] != keywords[i-1]]]
+        words = self.convert_tags_into_keywords(split_sentences(text), 2)
         if len(words) < 2:
             self.expand(words, 2)
         else:
             while len(words) > 2:
-                words.pop()
+                return words[:2]
         return words
+
+    def convert_tags_into_keywords(self,tags, n):
+        keywords = self.keywords
+        result = []
+        overlap_result = []
+        weak_overlap_result = []
+        for tag in tags:
+            if tag in keywords:
+                result.append(tag)
+            else:
+                overlap_keyword = overlap(tag, keywords)
+                if overlap_keyword is not None:
+                    overlap_result.append(overlap_keyword)
+                else:
+                    weak_overlap = weak_overlap(tag, keywords)
+                    if weak_overlap is not None:
+                        weak_overlap_result.append(weak_overlap)
+        result = result + overlap_result + weak_overlap_result
+        return result[:n]
+
+def overlap(tag, keywords):
+    for keyword in keywords:
+        if keyword in tag or tag in keyword:
+            return keyword
+    return None
+
+def weak_overlap(tag, keywords):
+    for keyword in keywords:
+        if set(tag) & set(keyword) != set():
+            return keyword
+    return None
 
 if __name__ == '__main__':
     planner = Planner()

@@ -49,6 +49,17 @@ class MatchUtil:
         else:
             raise Exception('No tones associated with the character')
 
+
+    def dieci(self, sentences):
+        for sentence in sentences:
+            for i in range(len(sentence) - 1):
+                for j in range(len(sentence) - 1):
+                    if i == j:
+                        continue
+                    if sentence[i] == sentence[j]:
+                        return False
+        return True
+
     def eval_rhyme(self, sentences):
 
         if len(sentences) != 2:

@@ -21,7 +21,7 @@ tf.app.flags.DEFINE_integer('beam_width', 1, 'Beam width used in beamsearch')
 tf.app.flags.DEFINE_integer('decode_batch_size', 80, 'Batch size used for decoding')
 tf.app.flags.DEFINE_integer('max_decode_step', 500, 'Maximum time step limit to decode')
 tf.app.flags.DEFINE_boolean('write_n_best', False, 'Write n-best list (n=beam_width)')
-tf.app.flags.DEFINE_string('model_path', 'kernel/model/translate.ckpt-3842100', 'Path to a specific model checkpoint.')
+tf.app.flags.DEFINE_string('model_path', 'kernel/model/translate.ckpt-1078500', 'Path to a specific model checkpoint.')
 tf.app.flags.DEFINE_string('model_dir', None, 'Path to load model checkpoints')
 tf.app.flags.DEFINE_string('predict_mode', 'sample', 'Decode helper to use for predicting')
 tf.app.flags.DEFINE_string('decode_input', 'data/newstest2012.bpe.de', 'Decoding input path')
@@ -113,15 +113,16 @@ class Seq2SeqPredictor:
                                                             rev=FLAGS.rev_data,
                                                             align=FLAGS.align_data)
 
+            print(source)
             predicted_batch = self.model.predict(
                 self.sess,
                 encoder_inputs=source,
                 encoder_inputs_length=source_len
             )
 
-            predicted_line = predicted_batch[0] # predicted is a batch of one line
-            predicted_line_clean = predicted_line[:-1] # remove the end token
-            predicted_ints = [x[0] for x in predicted_line_clean] # Flatten from [time_step, 1] to [time_step]
+            predicted_line = predicted_batch[0]  # predicted is a batch of one line
+            predicted_line_clean = predicted_line[:-1]  # remove the end token
+            predicted_ints = [x[0] for x in predicted_line_clean]  # Flatten from [time_step, 1] to [time_step]
             predicted_sentence = ints_to_sentence(predicted_ints)
 
             if FLAGS.rev_data:
