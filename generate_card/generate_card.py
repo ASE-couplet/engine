@@ -9,28 +9,6 @@ def poetry_vertical(poetry, font_path=None):
     sentences = poetry.split('\n')
     num_words = len(sentences[0])
 
-    image = Image.new("RGB", ((num_words) * font_size, 150), "white")
-    draw = ImageDraw.Draw(image)
-
-    if font_path:
-        font = ImageFont.truetype(font_path, font_size)
-        print(font)
-    else:
-        font = None
-
-    draw.multiline_text(xy=(0, 0), text=poetry, fill=(0, 0, 0), font=font,
-                        spacing=30, align='left')
-
-    del draw
-    image = image.rotate(270, expand=1)
-    return image
-
-
-def poetry_vertical_v2(poetry, font_path=None):
-    font_size = 40
-    sentences = poetry.split('\n')
-    num_words = len(sentences[0])
-
     image = Image.new("RGB", (150, (num_words + 4) * font_size), "white")
     draw = ImageDraw.Draw(image)
 
