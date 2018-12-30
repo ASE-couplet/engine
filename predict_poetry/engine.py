@@ -1,6 +1,7 @@
 import argparse
 import sys
 import logging
+import time
 
 import tensorflow as tf
 from sqlalchemy import create_engine, MetaData, Column
@@ -39,7 +40,7 @@ class Main_Poetry_maker:
             lines = self.predictor.predict(keywords)
             result = self.Judge.eval_rhyme(lines)
         logging.debug( lines[0]+'('+keywords[0]+')  '+lines[1]+'('+keywords[1]+')'+lines[2]+'('+keywords[2]+')'+lines[3]+'('+keywords[3]+')' )
-        return lines[0]+'   '+lines[1]+'   '+lines[2]+'   '+lines[3]
+        return lines[0]+'\n'+lines[1]+'\n'+lines[2]+'\n'+lines[3]
 
 if __name__ == "__main__":
     mode = parse_arguments(sys.argv[1:]).Mode
@@ -63,3 +64,4 @@ if __name__ == "__main__":
             item.poem = maker.predict(item.tags)
             sess.commit()
             logging.warning("Making poems for id:{} poems:{}".format(item.id, item.poem))
+        time.sleep(1)

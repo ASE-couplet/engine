@@ -1,6 +1,7 @@
 import argparse
 import sys
 import logging
+import time
 
 import tensorflow as tf
 from sqlalchemy import create_engine, MetaData, Column
@@ -41,7 +42,7 @@ class Main_Poetry_maker:
             no_dieci = self.Judge.dieci(lines)
             result = result and no_dieci
         logging.debug( lines[0]+'('+keywords[0]+')  '+lines[1]+'('+keywords[1]+')')
-        return lines[0]+'   '+lines[1]
+        return lines[0]+'\n'+lines[1]
 
 if __name__ == "__main__":
     mode = parse_arguments(sys.argv[1:]).Mode
@@ -66,3 +67,4 @@ if __name__ == "__main__":
             item.poem = maker.predict(item.tags)
             sess.commit()
             logging.warning("Making poems for id:{} poems:{}".format(item.id, item.poem))
+        time.sleep(1)
