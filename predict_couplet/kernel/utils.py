@@ -7,9 +7,8 @@ VOCAB_SIZE = 6000
 SEP_TOKEN = 0
 PAD_TOKEN = 5999
 
-
 DATA_RAW_DIR = 'kernel/data/raw'
-DATA_PROCESSED_DIR = 'kernel/data/processed'
+DATA_PROCESSED_DIR = os.path.join(os.path.dirname(__file__), 'data', 'processed')
 DATA_SAMPLES_DIR = 'data/samples'
 MODEL_DIR = 'model'
 LOG_DIR = 'log'
