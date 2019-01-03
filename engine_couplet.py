@@ -55,7 +55,6 @@ if __name__ == "__main__":
     else:
         engine = create_engine("postgresql+psycopg2://poemscape@poemscape")
     maker = Main_Poetry_maker()
-    ipdb.set_trace()
     metadata = MetaData()
     metadata.reflect(engine, only=['api_order'])
     Base = automap_base(metadata=metadata)
