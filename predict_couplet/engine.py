@@ -9,14 +9,17 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.ext.automap import automap_base
 from sqlalchemy.orm import sessionmaker
 
+sys.path.append("..")
 from api import img2tag
 from plan import Planner
+from generate_card import generate_card
 from predict import Seq2SeqPredictor
 from match import MatchUtil
 
-import ipdb
-
 logging.basicConfig(level=logging.WARNING)
+
+card_dir = "/var/opt/poemscape/media/card"
+image_dir = "/var/opt/poemscape/media"
 
 def parse_arguments(argv):
     parser = argparse.ArgumentParser()
@@ -64,7 +67,12 @@ if __name__ == "__main__":
         for item in target_orders:
             if mode != "dev":
                 item.tags = img2tag('http://poemscape.mirrors.asia/media/' + item.image) 
-            item.poem = maker.predict(item.tags)
+                item.poem = maker.predict(item.tags)            
+                generate_card.generate_card(os.path.join(image_dir, item.image), item.poem, \
+                                            os.path.join(card_dir, str(item.id)+".png"))
+                item.card = os.path.join(card_dir, str(item.id)+".png")
+            else:
+                item.poem = maker.predict(item.tags)   
             sess.commit()
-            logging.warning("Making poems for id:{} poems:{}".format(item.id, item.poem))
+            logging.debug("Making poems for id:{} poems:{}".format(item.id, item.poem))
         time.sleep(1)

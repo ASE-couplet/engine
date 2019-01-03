@@ -3,12 +3,17 @@ from PIL import Image
 from PIL import ImageFont
 from PIL import ImageDraw
 
-image_path = 'kuan.png'
-poetry = u'落霞与孤鹜齐飞，秋水共长天一色。 \n落霞与孤鹜齐飞，秋水共长天一色。 \n'
-QRcode_path = 'QR.png'
-font_path = 'Light.ttc'
-logo_prefix = 'logo'
-output_path = './3.png'
+import sys
+from os.path import abspath, join, dirname
+
+path = dirname(__file__)
+
+#image_path = os.path.join(path, 'kuan.png')
+#poetry = u'落霞与孤鹜齐飞，秋水共长天一色。 \n落霞与孤鹜齐飞，秋水共长天一色。 \n'
+QRcode_path = os.path.join(path, 'QR.png')
+font_path = os.path.join(path, 'Light.ttc')
+logo_prefix = os.path.join(path, 'logo')
+#output_path = os.path.join(path, './3.png')
 
 def poetry_vertical(poetry, font_path=None):
     font_size = 40
@@ -79,7 +84,7 @@ def card_vertical(image_path, poetry, QRcode_path, font_path, logo_path, output_
     else:
         raise RuntimeError("logo path :{} not exists ".format(logo_path))
     # get poetry
-    poetry_img = poetry_vertical_v2(poetry, font_path)
+    poetry_img = poetry_vertical(poetry, font_path)
 
     blank_img = Image.new('RGB', (940, img_h), "white")
     blank_img.paste(img, (0, 0))
@@ -154,7 +159,7 @@ def card_horizontal(image_path, poetry, QRcode_path, font_path, logo_path, outpu
     return blank_img
 
 
-def generate_card():
+def generate_card(image_path, poetry, output_path):
     if os.path.exists(image_path):
         img = Image.open(image_path)
         img_w, img_h = img.size
