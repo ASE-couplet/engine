@@ -8,16 +8,22 @@ from os.path import abspath, join, dirname
 
 path = dirname(__file__)
 
-#image_path = os.path.join(path, 'kuan.png')
-#poetry = u'落霞与孤鹜齐飞，秋水共长天一色。 \n落霞与孤鹜齐飞，秋水共长天一色。 \n'
+# image_path = os.path.join(path, 'kuan.png')
+# poetry = u'落霞与孤鹜齐飞，秋水共长天一色。 \n落霞与孤鹜齐飞，秋水共长天一色。 \n'
 QRcode_path = os.path.join(path, 'QR.png')
 font_path = os.path.join(path, 'Light.ttc')
 logo_prefix = os.path.join(path, 'logo')
-#output_path = os.path.join(path, './3.png')
+
+
+# output_path = os.path.join(path, './3.png')
 
 def poetry_vertical(poetry, font_path=None):
     font_size = 40
     sentences = poetry.split('\n')
+    if len(sentences) == 4:
+        new_sentences = []
+        new_sentences.append(sentences[0] + '，' + sentences[1])
+        new_sentences.append(sentences[2] + '，' + sentences[3])
     num_words = len(sentences[0])
 
     image = Image.new("RGB", (150, (num_words + 4) * font_size), "white")
@@ -25,7 +31,7 @@ def poetry_vertical(poetry, font_path=None):
 
     if font_path:
         font = ImageFont.truetype(font_path, font_size)
-#        print(font)
+    #        print(font)
     else:
         font = None
     w = 150 - font_size
@@ -63,9 +69,9 @@ def card_vertical(image_path, poetry, QRcode_path, font_path, logo_path, output_
     if os.path.exists(image_path):
         img = Image.open(image_path)
         img_w, img_h = img.size
-        scale = img_h / img_w
-        img_w = int(max(scale * 680, 1000))
-        img = resize_image(img, (680, img_w))
+        scale = img_w / img_h
+        img_w = int(scale * 1000)
+        img = resize_image(img, (img_w, 1000))
         img_w, img_h = img.size
     else:
         raise RuntimeError('image path :{} not exists '.format(image_path))
@@ -86,11 +92,11 @@ def card_vertical(image_path, poetry, QRcode_path, font_path, logo_path, output_
     # get poetry
     poetry_img = poetry_vertical(poetry, font_path)
 
-    blank_img = Image.new('RGB', (940, img_h), "white")
+    blank_img = Image.new('RGB', (img_w + 250, img_h), "white")
     blank_img.paste(img, (0, 0))
-    blank_img.paste(logo, (img_w + 20, 50))
-    blank_img.paste(poetry_img, (img_w + 80, 50))
-    blank_img.paste(QRcode, (img_w + 80, img_h - 210))
+    blank_img.paste(poetry_img, (img_w + 40, 50))
+    blank_img.paste(logo, (img_w + 20, 60))
+    blank_img.paste(QRcode, (img_w + 50, img_h - 210))
 
     # show and save
     # blank_img.show()
@@ -101,6 +107,10 @@ def card_vertical(image_path, poetry, QRcode_path, font_path, logo_path, output_
 def poetry_horizontal(poetry, font_path=None):
     font_size = 40
     sentences = poetry.split('\n')
+    if len(sentences) == 4:
+        new_sentences = []
+        new_sentences.append(sentences[0] + '，' + sentences[1])
+        new_sentences.append(sentences[2] + '，' + sentences[3])
     num_words = len(sentences[0])
 
     image = Image.new("RGB", ((num_words) * font_size, 150), "white")
@@ -108,7 +118,7 @@ def poetry_horizontal(poetry, font_path=None):
 
     if font_path:
         font = ImageFont.truetype(font_path, font_size)
-#        print(font)
+    #        print(font)
     else:
         font = None
 
@@ -125,8 +135,8 @@ def card_horizontal(image_path, poetry, QRcode_path, font_path, logo_path, outpu
         img = Image.open(image_path)
         img_w, img_h = img.size
         scale = img_h / img_w
-        img_w = int(scale * 980)
-        img = resize_image(img, (980, img_w))
+        img_h = int(scale * 980)
+        img = resize_image(img, (980, img_h))
         img_w, img_h = img.size
     else:
         raise RuntimeError('image path :{} not exists '.format(image_path))
@@ -154,7 +164,7 @@ def card_horizontal(image_path, poetry, QRcode_path, font_path, logo_path, outpu
     blank_img.paste(QRcode, (980 - 200, img_h + 60))
 
     # show and save
-#    blank_img.show()
+    #    blank_img.show()
     blank_img.save(output_path)
     return blank_img
 
@@ -172,7 +182,6 @@ def generate_card(image_path, poetry, output_path):
         logo_path = logo_prefix + '_vertical.png'
         card_vertical(image_path, poetry, QRcode_path, font_path, logo_path, output_path)
     return True
-
 
 
 if __name__ == "__main__":
