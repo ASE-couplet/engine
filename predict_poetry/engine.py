@@ -40,7 +40,7 @@ class Main_Poetry_maker:
             lines = self.predictor.predict(keywords)
             result = self.Judge.eval_rhyme(lines)
         logging.debug( lines[0]+'('+keywords[0]+')  '+lines[1]+'('+keywords[1]+')'+lines[2]+'('+keywords[2]+')'+lines[3]+'('+keywords[3]+')' )
-        return lines[0]+'\n'+lines[1]+'\n'+lines[2]+'\n'+lines[3]
+        return '\n'.join(lines) + '\n'
 
 if __name__ == "__main__":
     mode = parse_arguments(sys.argv[1:]).Mode

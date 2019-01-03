@@ -3,6 +3,12 @@ from PIL import Image
 from PIL import ImageFont
 from PIL import ImageDraw
 
+image_path = 'kuan.png'
+poetry = u'落霞与孤鹜齐飞，秋水共长天一色。 \n落霞与孤鹜齐飞，秋水共长天一色。 \n'
+QRcode_path = 'QR.png'
+font_path = 'Light.ttc'
+logo_prefix = 'logo'
+output_path = './3.png'
 
 def poetry_vertical(poetry, font_path=None):
     font_size = 40
@@ -14,7 +20,7 @@ def poetry_vertical(poetry, font_path=None):
 
     if font_path:
         font = ImageFont.truetype(font_path, font_size)
-        print(font)
+#        print(font)
     else:
         font = None
     w = 150 - font_size
@@ -97,7 +103,7 @@ def poetry_horizontal(poetry, font_path=None):
 
     if font_path:
         font = ImageFont.truetype(font_path, font_size)
-        print(font)
+#        print(font)
     else:
         font = None
 
@@ -143,12 +149,12 @@ def card_horizontal(image_path, poetry, QRcode_path, font_path, logo_path, outpu
     blank_img.paste(QRcode, (980 - 200, img_h + 60))
 
     # show and save
-    blank_img.show()
+#    blank_img.show()
     blank_img.save(output_path)
     return blank_img
 
 
-def generate_card(image_path, poetry, QRcode_path, font_path, logo_prefix, output_path):
+def generate_card():
     if os.path.exists(image_path):
         img = Image.open(image_path)
         img_w, img_h = img.size
@@ -162,13 +168,9 @@ def generate_card(image_path, poetry, QRcode_path, font_path, logo_prefix, outpu
         card_vertical(image_path, poetry, QRcode_path, font_path, logo_path, output_path)
     return True
 
+
+
 if __name__ == "__main__":
-    image_path = 'kuan.png'
-    poetry = u'落霞与孤鹜齐飞，秋水共长天一色。 \n落霞与孤鹜齐飞，秋水共长天一色。 \n'
-    QRcode_path = 'QR.png'
-    font_path = 'Light.ttc'
-    logo_prefix = 'logo'
-    output_path = './3.png'
-    generate_card(image_path, poetry, QRcode_path, font_path, logo_prefix, output_path)
+    generate_card()
     # card_vertical(image_path, poetry, QRcode_path, font_path, logo_path, output_path)
     # card_horizontal(image_path, poetry, QRcode_path, font_path, logo_path, output_path)

@@ -42,7 +42,7 @@ class Main_Poetry_maker:
             no_dieci = self.Judge.dieci(lines)
             result = result and no_dieci
         logging.debug( lines[0]+'('+keywords[0]+')  '+lines[1]+'('+keywords[1]+')')
-        return lines[0]+'\n'+lines[1]
+        return '\n'.join(lines) + '\n'
 
 if __name__ == "__main__":
     mode = parse_arguments(sys.argv[1:]).Mode
