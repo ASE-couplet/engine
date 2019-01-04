@@ -11,7 +11,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.ext.automap import automap_base
 from sqlalchemy.orm import sessionmaker
 
-from predict_poetry.api import img2tag
+
 from predict_poetry.plan import Planner
 from generate_card import generate_card
 from predict_poetry.predict import Seq2SeqPredictor
@@ -21,6 +21,8 @@ logging.basicConfig(level=logging.WARNING)
 
 card_dir = "/var/opt/poemscape/media/card"
 image_dir = "/var/opt/poemscape/media"
+
+num_prepared = 10
 
 def parse_arguments(argv):
     parser = argparse.ArgumentParser()
@@ -51,26 +53,30 @@ if __name__ == "__main__":
     if mode == "dev":
         engine = create_engine('sqlite:///test_couplet.db?check_same_thread=False')
     else:
-        engine = create_engine("postgresql+psycopg2://poemscape@/poemscape")
+        engine = create_engine("postgresql+psycopg2://poemscape@poemscape")
     maker = Main_Poetry_maker()
     metadata = MetaData()
-    metadata.reflect(engine, only=['api_order'])
+    metadata.reflect(engine, only=['api_order', 'api_poetry'])
     Base = automap_base(metadata=metadata)
     Base.prepare()
     Order = Base.classes.api_order
+    Card = Base.classes.api_poetry
     Session = sessionmaker(bind=engine)
-    sess = Session()
     while(1):
-        target_orders = sess.query(Order).filter_by(poem=None)
-        for item in target_orders:
-            if mode != "dev":
-                item.tags = img2tag('http://poemscape.mirrors.asia/media/' + item.image) 
-                item.poem = maker.predict(item.tags)            
-                generate_card.generate_card(os.path.join(image_dir, item.image), item.poem, \
-                                            os.path.join(card_dir, str(item.id)+".png"))
-                item.card = str(item.id) + ".png"
-            else:
-                item.poem = maker.predict(item.tags)   
-            sess.commit()
-            logging.debug("Making poems for id:{} poems:{}".format(item.id, item.poem))
+        sess = Session()
+        all_orders = sess.query(Order).filter_by(poem=None)
+        for item in all_orders:
+            cards = sess.query(Card).filter_by(id==item.id)   # TODO
+            requests = max(num_prepared - (len(cards) - item.poetry_viewed), 0)    # TODO
+            for i in range(requests):
+                tags = item.tags
+                index = len(cards) + i + 1
+                content = maker.predict(tags)
+                generate_card.generate_card(os.path.join(image_dir, item.image), content, \
+                            os.path.join(card_dir, str(item.id) + "_" + str(index) +".png"))
+                card_pth = str(item.id) + "_" + str(index) +".png"
+                product = Card(order=item.id, index=index, content=content, card=card_pth)
+                sess.add(product) 
+                logging.debug("Making poems for id:{} poems:{} index:{}".format(item.id, content, index))
+                sess.commit()
         time.sleep(1)
