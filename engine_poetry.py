@@ -72,7 +72,6 @@ if __name__ == "__main__":
                 generate_card.generate_card(os.path.join(image_dir, item.image), item.poem, \
                                         os.path.join(card_dir, str(item.id)+".png"))
                 item.card = "card/" + str(item.id) + ".png"
-
             else:
                 item.poem = maker.predict(item.tags)   
             sess.commit()
