@@ -67,11 +67,14 @@ if __name__ == "__main__":
         target_orders = sess.query(Order).filter_by(poem=None)
         for item in target_orders:
             if mode != "dev":
-                item.tags = img2tag('http://poemscape.mirrors.asia/media/' + item.image) 
+                try:
+                    item.tags = img2tag("http://poemscape.mirrors.asia/media" + item.image) 
+                except:
+                    item.tags = "笑"
                 item.poem = maker.predict(item.tags)            
                 generate_card.generate_card(os.path.join(image_dir, item.image), item.poem, \
-                                            os.path.join(card_dir, str(item.id)+".png"))
-                item.card = 'card/' + str(item.id) + ".png"
+                                        os.path.join(card_dir, str(item.id)+".png"))
+                item.card = "card/" + str(item.id) + ".png"
             else:
                 item.poem = maker.predict(item.tags)   
             sess.commit()
