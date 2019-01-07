@@ -124,7 +124,7 @@ def poetry_horizontal(poetry, font_path=None):
     else:
         font = None
 
-    draw.multiline_text(xy=(0, 0), text=sentences[0]+'\n'+sentences[1]+'\n, fill=(0, 0, 0), font=font,
+    draw.multiline_text(xy=(0, 0), text=sentences[0]+'\n'+sentences[1]+'\n', fill=(0, 0, 0), font=font,
                         spacing=30, align='left')
 
     del draw
