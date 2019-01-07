@@ -24,6 +24,7 @@ def poetry_vertical(poetry, font_path=None):
         new_sentences = []
         new_sentences.append(sentences[0] + '，' + sentences[1])
         new_sentences.append(sentences[2] + '，' + sentences[3])
+    sentences = new_sentences
     num_words = len(sentences[0])
 
     image = Image.new("RGB", (150, (num_words + 4) * font_size), "white")
@@ -111,6 +112,7 @@ def poetry_horizontal(poetry, font_path=None):
         new_sentences = []
         new_sentences.append(sentences[0] + '，' + sentences[1])
         new_sentences.append(sentences[2] + '，' + sentences[3])
+    sentences = new_sentences
     num_words = len(sentences[0])
 
     image = Image.new("RGB", ((num_words) * font_size, 150), "white")
