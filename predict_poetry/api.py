@@ -47,6 +47,5 @@ def img2tag(image_url):
     return tags_str
 
 if __name__ == "__main__":
-    image_url =  "https://upload.wikimedia.org/wikipedia/commons/thumb/1/12/" + \
-     "Broadway_and_Times_Square_by_night.jpg/450px-Broadway_and_Times_Square_by_night.jpg"
+    image_url =  "http://poemscape.mirrors.asia/media/IMG_20181230_214337_yhKyKjV.jpg"
     print(img2tag(image_url))
