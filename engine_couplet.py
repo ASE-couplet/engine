@@ -67,7 +67,7 @@ if __name__ == "__main__":
         for item in target_orders:
             if mode != "dev":
                 try:
-                    item.tags = img2tag("http://poemscape.mirrors.asia/media" + item.image) 
+                    item.tags = img2tag("http://poemscape.mirrors.asia/media/" + item.image) 
                 except:
                     item.tags = "笑"
                 item.poem = maker.predict(item.tags)            
