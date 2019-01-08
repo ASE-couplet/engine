@@ -64,7 +64,10 @@ if __name__ == "__main__":
         target_orders = sess.query(Order).filter(and_(Order.couplet==None, Order.tags!=None))
         for item in target_orders:
             if mode != "dev":
-                item.couplet = maker.predict(item.tags)   
+                try:
+                    item.couplet = maker.predict(item.tags)
+                except:
+                    item.couplet = "窗前明月光\n疑是地上霜\n"   
             sess.commit()
             logging.warning("Making poems for id:{} poems:{}".format(item.id, item.couplet))
         sess.close()
