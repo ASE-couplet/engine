@@ -14,7 +14,7 @@ from generate_card import generate_card
 logging.basicConfig(level=logging.WARNING)
 
 card_dir = "/var/opt/poemscape/media/card"
-couplet_card_dir = "/var/opt/poemscape/media/card"
+couplet_card_dir = "/var/opt/poemscape/media/couplet_card"
 image_dir = "/var/opt/poemscape/media"
 
 def parse_arguments(argv):
