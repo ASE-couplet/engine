@@ -89,10 +89,10 @@ class Planner:
                 if overlap_keyword is not None:
                     overlap_result.append(overlap_keyword)
                 else:
-                    weak_overlap = weak_overlap(tag, keywords)
-                    if weak_overlap is not None:
-                        weak_overlap_result.append(weak_overlap)
-        result = result + overlap_result + weak_overlap_result
+                    weak_overlap_keywords = weak_overlap(tag, keywords)
+                    if weak_overlap_keywords is not None:
+                        weak_overlap_result.append(weak_overlap_keywords)
+        result = result + overlap_result
         return result[:n]
 
 def overlap(tag, keywords):
