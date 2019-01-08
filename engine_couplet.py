@@ -5,7 +5,7 @@ import logging
 import time
 
 import tensorflow as tf
-from sqlalchemy import create_engine, MetaData, Column
+from sqlalchemy import create_engine, MetaData, Column, and_
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.ext.automap import automap_base
 from sqlalchemy.orm import sessionmaker
@@ -47,10 +47,8 @@ class Main_Poetry_maker:
         return '\n'.join(lines) + '\n'
 
 if __name__ == "__main__":
-    import ipdb
-    ipdb.set_trace()
     mode = parse_arguments(sys.argv[1:]).Mode
-    if mode == "dev":
+    if mode != "dev":
         engine =  engine = create_engine("postgresql+psycopg2://poemscape:asepoemscape@poemscape.mirrors.asia:5432/poemscape")
     else:
         engine = create_engine("postgresql+psycopg2://poemscape@poemscape")
@@ -63,7 +61,7 @@ if __name__ == "__main__":
     Session = sessionmaker(bind=engine)
     sess = Session()
     while(1):
-        target_orders = sess.query(Order).filter_by(couplet is None and tags is not None)
+        target_orders = sess.query(Order).filter(and_(Order.couplet==None, Order.tags!=None))
         for item in target_orders:
             if mode != "dev":
                 item.couplet = maker.predict(item.tags)   
