@@ -12,7 +12,7 @@ _w2v_with_alignment_model_path = os.path.join(DATA_PROCESSED_DIR, 'word2vec_with
 
 def print_unicode_list(lst):
     msg = repr([x.encode(sys.stdout.encoding) for x in lst]).decode('string-escape')
-    print(msg)
+#    print(msg)
 
 def experiment1():
     model = models.Word2Vec.load(_w2v_model_path)

@@ -113,7 +113,7 @@ class Seq2SeqPredictor:
                                                             rev=FLAGS.rev_data,
                                                             align=FLAGS.align_data)
 
-            print(source)
+#            print(source)
             predicted_batch = self.model.predict(
                 self.sess,
                 encoder_inputs=source,

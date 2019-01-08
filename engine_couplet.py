@@ -11,9 +11,7 @@ from sqlalchemy.ext.automap import automap_base
 from sqlalchemy.orm import sessionmaker
 
 sys.path.append("./predict_couplet")
-from predict_couplet.api import img2tag
 from predict_couplet.plan import Planner
-from generate_card import generate_card
 from predict_couplet.predict import Seq2SeqPredictor
 from predict_couplet.match import MatchUtil
 
@@ -49,9 +47,11 @@ class Main_Poetry_maker:
         return '\n'.join(lines) + '\n'
 
 if __name__ == "__main__":
+    import ipdb
+    ipdb.set_trace()
     mode = parse_arguments(sys.argv[1:]).Mode
     if mode == "dev":
-        engine = create_engine('sqlite:///test_couplet.db?check_same_thread=False')
+        engine =  engine = create_engine("postgresql+psycopg2://poemscape:asepoemscape@poemscape.mirrors.asia:5432/poemscape")
     else:
         engine = create_engine("postgresql+psycopg2://poemscape@poemscape")
     maker = Main_Poetry_maker()
@@ -63,19 +63,11 @@ if __name__ == "__main__":
     Session = sessionmaker(bind=engine)
     sess = Session()
     while(1):
-        target_orders = sess.query(Order).filter_by(poem=None)
+        target_orders = sess.query(Order).filter_by(couplet is None and tags is not None)
         for item in target_orders:
             if mode != "dev":
-                try:
-                    item.tags = img2tag("http://poemscape.mirrors.asia/media/" + item.image) 
-                except:
-                    item.tags = "笑"
-                item.poem = maker.predict(item.tags)            
-                generate_card.generate_card(os.path.join(image_dir, item.image), item.poem, \
-                                        os.path.join(card_dir, str(item.id)+".png"))
-                item.card = "card/" + str(item.id) + ".png"
-            else:
-                item.poem = maker.predict(item.tags)   
+                item.couplet = maker.predict(item.tags)   
             sess.commit()
-            logging.debug("Making poems for id:{} poems:{}".format(item.id, item.poem))
+            logging.warning("Making poems for id:{} poems:{}".format(item.id, item.couplet))
+        sess.close()
         time.sleep(1)
