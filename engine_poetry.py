@@ -6,21 +6,16 @@ import time
 sys.path.append("./predict_poetry")
 
 import tensorflow as tf
-from sqlalchemy import create_engine, MetaData, Column
+from sqlalchemy import create_engine, MetaData, Column, and_
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.ext.automap import automap_base
 from sqlalchemy.orm import sessionmaker
 
-from predict_poetry.api import img2tag
 from predict_poetry.plan import Planner
-from generate_card import generate_card
 from predict_poetry.predict import Seq2SeqPredictor
 from predict_poetry.match import MatchUtil
 
 logging.basicConfig(level=logging.WARNING)
-
-card_dir = "/var/opt/poemscape/media/card"
-image_dir = "/var/opt/poemscape/media"
 
 def parse_arguments(argv):
     parser = argparse.ArgumentParser()
@@ -61,19 +56,14 @@ if __name__ == "__main__":
     Session = sessionmaker(bind=engine)
     sess = Session()
     while(1):
-        target_orders = sess.query(Order).filter_by(poem=None)
+        target_orders = sess.query(Order).filter(and_(Order.poem==None, Order.tags!=None))
         for item in target_orders:
             if mode != "dev":
                 try:
-                    item.tags = img2tag("http://poemscape.mirrors.asia/media/" + item.image) 
+                    item.poem = maker.predict(item.tags)
                 except:
-                    item.tags = "笑"
-                item.poem = maker.predict(item.tags)            
-                generate_card.generate_card(os.path.join(image_dir, item.image), item.poem, \
-                                        os.path.join(card_dir, str(item.id)+".png"))
-                item.card = "card/" + str(item.id) + ".png"
-            else:
-                item.poem = maker.predict(item.tags)   
+                    item.poem = "窗前明月光\n疑是地上霜\n举头望明月\n低头思故乡\n"   
             sess.commit()
-            logging.debug("Making poems for id:{} poems:{}".format(item.id, item.poem))
-        time.sleep(1)
+            logging.warning("Making poems for id:{} poems:{}".format(item.id, item.poem))
+        sess.close()
+        time.sleep(0.5)
