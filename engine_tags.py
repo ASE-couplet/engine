@@ -26,8 +26,8 @@ def parse_arguments(argv):
 def process_image(filename):
     fsize = os.path.getsize(filename)
     image = Image.open(filename)
-    w,h = image.size()
-    scale = int(fsize/4194304) + 1
+    w,h = image.size
+    scale = 2
     new_im = image.resize((int(w/scale), int(h/scale)), Image.ANTIALIAS) 
     new_im.save(filename)
     new_im.close()
@@ -49,8 +49,11 @@ if __name__ == "__main__":
         target_orders = sess.query(Order).filter(Order.tags==None)
         for item in target_orders:
             if mode != "dev":
+                fsize = os.path.getsize(os.path.join(image_dir, item.image))
                 try:
-                    if os.path.getsize(os.path.join(image_dir, item.image)) > 4194304:
+                    if fsize > 4000000:
+                        raise RuntimeError("Too large Image")
+                    if fsize > 4194304 :
                         process_image(os.path.join(image_dir, item.image))
                     item.tags = img2tag("http://poemscape.mirrors.asia/media/" + item.image)
                 except Exception as e:
