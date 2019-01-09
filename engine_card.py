@@ -51,9 +51,9 @@ if __name__ == "__main__":
                     logging.error(e)
                     item.card = "card/" + str(66) + ".png"
                 sess.commit()
-                logging.warning("Making card for id:{} poems:{}".format(item.id, item.card))
+                logging.warning("Making card for id:{} cards:{}".format(item.id, item.card))
 
-        target_orders = sess.query(Order).filter(and_(or_(Order.couplet_card==None, Order.couplet_card==''), Order.poem!=None))
+        target_orders = sess.query(Order).filter(and_(or_(Order.couplet_card==None, Order.couplet_card==''), Order.couplet!=None))
         for item in target_orders:
             if mode != "dev":
                 try:
@@ -64,7 +64,7 @@ if __name__ == "__main__":
                     logging.error(e)
                     item.couplet_card = "card/" + str(66) + ".png"
                 sess.commit()
-                logging.warning("Making couplet_card for id:{} poems:{}".format(item.id, item.couplet_card))
+                logging.warning("Making couplet_card for id:{} cards:{}".format(item.id, item.couplet_card))
 
         sess.close()
         time.sleep(0.5)
