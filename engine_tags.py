@@ -4,6 +4,7 @@ import sys
 import logging
 import time
 
+from PIL import Image
 from sqlalchemy import create_engine, MetaData, Column, and_
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.ext.automap import automap_base
@@ -22,6 +23,14 @@ def parse_arguments(argv):
         default='server')
     return parser.parse_args(argv)
 
+def process_image(filename):
+    fsize = os.path.getsize(filename)
+    image = Image.open(filename)
+    w,h = image.size()
+    scale = int(fsize/4194304) + 1
+    new_im = image.resize((int(w/scale), int(h/scale)), Image.ANTIALIAS) 
+    new_im.save(filename)
+    new_im.close()
 
 if __name__ == "__main__":
     mode = parse_arguments(sys.argv[1:]).Mode
@@ -41,8 +50,11 @@ if __name__ == "__main__":
         for item in target_orders:
             if mode != "dev":
                 try:
+                    if os.path.getsize(os.path.join(image_dir, item.image)) > 4194304:
+                        process_image(os.path.join(image_dir, item.image))
                     item.tags = img2tag("http://poemscape.mirrors.asia/media/" + item.image)
-                except:
+                except Exception as e:
+                    logging.error(e)
                     item.tags = "笑"
             sess.commit()
             logging.warning("Making tags for id:{} poems:{}".format(item.id, item.tags))
