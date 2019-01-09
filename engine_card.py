@@ -45,7 +45,8 @@ if __name__ == "__main__":
                     generate_card.generate_card(os.path.join(image_dir, item.image), item.poem, \
                                         os.path.join(card_dir, str(item.id)+".png"))
                     item.card = "card/" + str(item.id) + ".png"
-                except:
+                except Exception as e:
+                    logging.error(e)
                     item.card = "card/" + str(66) + ".png"
                 sess.commit()
                 logging.warning("Making card for id:{} poems:{}".format(item.id, item.card))
@@ -57,7 +58,8 @@ if __name__ == "__main__":
                     generate_card.generate_card(os.path.join(image_dir, item.image), item.poem, \
                                         os.path.join(couplet_card_dir, str(item.id)+".png"))
                     item.couplet_card = "couplet_card/" + str(item.id) + ".png"
-                except:
+                except Exception as e:
+                    logging.error(e)
                     item.couplet_card = "card/" + str(66) + ".png"
                 sess.commit()
                 logging.warning("Making couplet_card for id:{} poems:{}".format(item.id, item.couplet_card))

@@ -120,3 +120,4 @@ predict_poetry/model
 predict_couplet/*.db
 predict_poetry/*.db
 predict_poetry/*.jpg
+generate_card/test/
