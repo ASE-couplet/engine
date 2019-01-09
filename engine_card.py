@@ -49,7 +49,7 @@ if __name__ == "__main__":
                     item.card = "card/" + str(item.id) + ".png"
                 except Exception as e:
                     logging.error(e)
-                    item.card = "card/" + str(66) + ".png"
+                    item.card = "card/" + str(250) + ".png"
                 sess.commit()
                 logging.warning("Making card for id:{} cards:{}".format(item.id, item.card))
 
@@ -62,7 +62,7 @@ if __name__ == "__main__":
                     item.couplet_card = "couplet_card/" + str(item.id) + ".png"
                 except Exception as e:
                     logging.error(e)
-                    item.couplet_card = "card/" + str(66) + ".png"
+                    item.couplet_card = "couplet_card/" + str(250) + ".png"
                 sess.commit()
                 logging.warning("Making couplet_card for id:{} cards:{}".format(item.id, item.couplet_card))
 
