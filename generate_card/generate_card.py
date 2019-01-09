@@ -187,6 +187,10 @@ def generate_card(image_path, poetry, output_path):
 
 
 if __name__ == "__main__":
-    generate_card()
+    image_path = os.path.join(path, "test", "test.jpg")
+    output_path = os.path.join(path, "test", "test_out.png")
+    poetry = "和雨何须花落泪\n观云哪在月空心\n"
+
+    generate_card(image_path, poetry, output_path)
     # card_vertical(image_path, poetry, QRcode_path, font_path, logo_path, output_path)
     # card_horizontal(image_path, poetry, QRcode_path, font_path, logo_path, output_path)
