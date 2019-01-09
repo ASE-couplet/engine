@@ -4,7 +4,7 @@ import sys
 import logging
 import time
 
-from sqlalchemy import create_engine, MetaData, Column, and_
+from sqlalchemy import create_engine, MetaData, Column, and_, or_
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.ext.automap import automap_base
 from sqlalchemy.orm import sessionmaker
@@ -38,7 +38,9 @@ if __name__ == "__main__":
     Session = sessionmaker(bind=engine)
     sess = Session()
     while(1):
-        target_orders = sess.query(Order).filter(and_(Order.card==None, Order.poem!=None))
+        # import ipdb
+        # ipdb.set_trace()
+        target_orders = sess.query(Order).filter(and_(or_(Order.card==None, Order.card==''), Order.poem!=None))
         for item in target_orders:
             if mode != "dev":
                 try:
@@ -50,11 +52,11 @@ if __name__ == "__main__":
                 sess.commit()
                 logging.warning("Making card for id:{} poems:{}".format(item.id, item.card))
 
-        target_orders = sess.query(Order).filter(and_(Order.couplet_card==None, Order.couplet!=None))
+        target_orders = sess.query(Order).filter(and_(or_(Order.couplet_card==None, Order.couplet_card==''), Order.poem!=None))
         for item in target_orders:
             if mode != "dev":
                 try:
-                    generate_card.generate_card(os.path.join(image_dir, item.image), item.poem, \
+                    generate_card.generate_card(os.path.join(image_dir, item.image), item.couplet, \
                                         os.path.join(couplet_card_dir, str(item.id)+".png"))
                     item.couplet_card = "couplet_card/" + str(item.id) + ".png"
                 except:
