@@ -51,7 +51,7 @@ if __name__ == "__main__":
             if mode != "dev":
                 fsize = os.path.getsize(os.path.join(image_dir, item.image))
                 try:
-                    if fsize > 4000000:
+                    if fsize > 8000000:
                         raise RuntimeError("Too large Image")
                     if fsize > 4194304 :
                         process_image(os.path.join(image_dir, item.image))
