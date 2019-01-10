@@ -17,9 +17,6 @@ from predict_couplet.match import MatchUtil
 
 logging.basicConfig(level=logging.WARNING)
 
-card_dir = "/var/opt/poemscape/media/card"
-image_dir = "/var/opt/poemscape/media"
-
 def parse_arguments(argv):
     parser = argparse.ArgumentParser()
     parser.add_argument('--Mode', type=str, 

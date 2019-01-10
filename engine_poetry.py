@@ -43,10 +43,10 @@ class Main_Poetry_maker:
 
 if __name__ == "__main__":
     mode = parse_arguments(sys.argv[1:]).Mode
-    if mode == "dev":
-        engine = create_engine('sqlite:///test_couplet.db?check_same_thread=False')
+    if mode != "dev":
+        engine =  engine = create_engine("postgresql+psycopg2://poemscape:asepoemscape@poemscape.mirrors.asia:5432/poemscape")
     else:
-        engine = create_engine("postgresql+psycopg2://poemscape@/poemscape")
+        engine = create_engine("postgresql+psycopg2://poemscape@poemscape")
     maker = Main_Poetry_maker()
     metadata = MetaData()
     metadata.reflect(engine, only=['api_order'])
