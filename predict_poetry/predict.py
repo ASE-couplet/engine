@@ -6,6 +6,8 @@ import json
 
 import tensorflow as tf
 
+import random
+
 from kernel.data_utils import prepare_batch_predict_data
 from kernel.model import Seq2SeqModel
 from kernel.vocab import get_vocab, ints_to_sentence
@@ -98,15 +100,64 @@ class Seq2SeqPredictor:
         # Reload existing checkpoint
         load_model(self.sess, self.model, saver)
 
+        # load faces
+        self.girl_poetry = None
+        self.boy_poetry = None
+        self.people_poetry = None
+        self.load_face()
+
     def __enter__(self):
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         self.sess.close()
 
+    def load_face(self):
+        girls = []
+        boys = []
+        people = []
+        with open('./predict_poetry/boys_poetry.txt', 'r', encoding='utf-8') as f_in:
+            for line in f_in.readlines():
+                data = line.strip().split()
+                if len(data) != 4:
+                    print(boys)
+                    print('boys poetry loaded')
+                    break
+                boys.append(data)
+        with open('./predict_poetry/girls_poetry.txt', 'r', encoding='utf-8') as f_in:
+            for line in f_in.readlines():
+                data = line.strip().split()
+                if len(data) != 4:
+                    print(girls)
+                    print('girls poetry loaded')
+                    break
+                girls.append(data)
+        with open('./predict_poetry/people_poetry.txt', 'r', encoding='utf-8') as f_in:
+            for line in f_in.readlines():
+                data = line.strip().split()
+                if len(data) != 4:
+                    print(people)
+                    print('people poetry loaded')
+                    break
+                people.append(data)
+        self.girl_poetry = girls
+        self.boy_poetry = boys
+        self.people_poetry = people
+
+
     def predict(self, keywords):
         sentences = []
+        i_keyword = 0
         for keyword in keywords:
+            if '男' in keyword:
+                return random.sample(self.boy_poetry, 1)[0]
+            elif '女' in keyword:
+                return random.sample(self.girl_poetry, 1)[0]
+        for keyword in keywords:
+            if '人' in keyword:
+                return random.sample(self.people_poetry, 1)[0]
+        while len(sentences) != 4:
+            keyword = keywords[i_keyword]
             source, source_len = prepare_batch_predict_data(keyword,
                                                             previous=sentences,
                                                             prev=FLAGS.prev_data,
@@ -126,10 +177,22 @@ class Seq2SeqPredictor:
 
             if FLAGS.rev_data:
                 predicted_sentence = predicted_sentence[::-1]
-
-            sentences.append(predicted_sentence)
+            if legal(predicted_sentence):
+                sentences.append(predicted_sentence)
+                i_keyword = i_keyword + 1
         return sentences
 
+
+def legal(sentence):
+    neg_dict = ['浊', '病', '死', '杀', '骨', '贱', '哀', '催', '盲', '猩', '哭', '']
+    for i in range(len(sentence)):
+        if sentence[i] in neg_dict:
+            return False
+        for j in range(i+1, len(sentence)):
+            if sentence[i] == sentence[j]:
+                if not (i + 1 == j and sentence[i] in ["盈盈", '脉脉']):
+                    return False
+    return True
 
 def main(_):
     KEYWORDS = [

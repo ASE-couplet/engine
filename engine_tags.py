@@ -58,7 +58,7 @@ if __name__ == "__main__":
                     item.tags = img2tag("http://poemscape.mirrors.asia/media/" + item.image)
                 except Exception as e:
                     logging.error(e)
-                    item.tags = "笑"
+                    item.tags = "人"
             sess.commit()
             logging.warning("Making tags for id:{} poems:{}".format(item.id, item.tags))
         sess.close()
