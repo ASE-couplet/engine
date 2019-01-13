@@ -62,4 +62,21 @@ if __name__ == "__main__":
             sess.commit()
             logging.warning("Making tags for id:{} poems:{}".format(item.id, item.tags))
         sess.close()
-        time.sleep(0.5)
+        time.sleep(0.25)
+        target_orders = sess.query(Order).filter(Order.tags == '人脸')
+        for item in target_orders:
+            if mode != "dev":
+                fsize = os.path.getsize(os.path.join(image_dir, item.image))
+                try:
+                    if fsize > 8000000:
+                        raise RuntimeError("Too large Image")
+                    if fsize > 4194304:
+                        process_image(os.path.join(image_dir, item.image))
+                    item.tags = img2tag_face("http://poemscape.mirrors.asia/media/" + item.image)
+                except Exception as e:
+                    logging.error(e)
+                    item.tags = "人"
+            sess.commit()
+            logging.warning("Making tags for id:{} poems:{}".format(item.id, item.tags))
+        sess.close()
+        time.sleep(0.25)
