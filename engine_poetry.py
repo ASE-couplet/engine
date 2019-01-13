@@ -32,9 +32,13 @@ class Main_Poetry_maker:
 
     def predict(self, input_ustr):
         input_ustr = input_ustr.strip()
-        keywords = self.planner.plan(input_ustr)
-        lines = self.predictor.predict(keywords)
-        result = self.Judge.eval_rhyme(lines)
+        if input_ustr == '男' or input_ustr == '女' or input_ustr == '人':
+            lines = self.predictor.predict(input_ustr)
+            result = True
+        else:
+            keywords = self.planner.plan(input_ustr)
+            lines = self.predictor.predict(keywords)
+            result = self.Judge.eval_rhyme(lines)
         while(result == False):
             lines = self.predictor.predict(keywords)
             result = self.Judge.eval_rhyme(lines)
@@ -60,7 +64,10 @@ if __name__ == "__main__":
         for item in target_orders:
             if mode != "dev":
                 try:
-                    item.poem = maker.predict(item.tags)
+                    if item.tags == '人脸':
+                        continue
+                    else:
+                        item.poem = maker.predict(item.tags)
                 except:
                     item.poem = "窗前明月光\n疑是地上霜\n举头望明月\n低头思故乡\n"   
             sess.commit()

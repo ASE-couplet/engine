@@ -148,6 +148,12 @@ class Seq2SeqPredictor:
     def predict(self, keywords):
         sentences = []
         i_keyword = 0
+        if keywords == '男':
+            return random.sample(self.boy_poetry, 1)[0]
+        elif keywords == '女':
+            return random.sample(self.girl_poetry, 1)[0]
+        elif keywords == '人':
+            return random.sample(self.people_poetry, 1)[0]
         for keyword in keywords:
             if '男' in keyword:
                 return random.sample(self.boy_poetry, 1)[0]
