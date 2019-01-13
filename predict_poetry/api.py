@@ -37,10 +37,10 @@ def img2tag(image_url):
     # relevant caption for the image is obtained from the 'description' property.
     analysis = response.json()
 
-    filter_neg_tags = ['室外', '游戏机', '室内','眼镜' ]
+    filter_neg_tags = ['室外', '游戏机', '室内','眼镜', '户外', '抽象', '自然', '空气']
 
     tags_convert_dict = {'年轻':'人', '公寓':'屋', '桌子': '柜', '柜台':'柜', '橙子':'果',
-                         '穿着':'衣', '星星':'星'}
+                         '穿着':'衣', '星星':'星', '峡谷':'峡'}
 
     tags_str = ""
     tags = response.json()['description']['tags']
