@@ -10,7 +10,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.ext.automap import automap_base
 from sqlalchemy.orm import sessionmaker
 
-from predict_poetry.api import img2tag
+from predict_poetry.api import img2tag, img2tag_face
 
 logging.basicConfig(level=logging.WARNING)
 
