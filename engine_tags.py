@@ -63,6 +63,7 @@ if __name__ == "__main__":
             logging.warning("Making tags for id:{} poems:{}".format(item.id, item.tags))
         sess.close()
         time.sleep(0.25)
+        continue
         target_orders = sess.query(Order).filter(Order.tags == '人脸')
         for item in target_orders:
             if mode != "dev":
